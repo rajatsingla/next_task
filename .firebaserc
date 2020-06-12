@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "next-task-ae81c"
+  },
+  "targets": {
+    "next-task-ae81c": {
+      "hosting": {
+        "yo": [
+          "neo-awake"
+        ]
+      }
+    }
+  }
+}

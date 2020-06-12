@@ -1,0 +1,108 @@
+
+$primary: #1686f7;
+// Import Bulma's core
+@import "~bulma/sass/utilities/_all";
+
+// Set your colors
+//$primary: #8def38;
+$primary-invert: findColorInvert($primary);
+$twitter: #4099FF;
+$twitter-invert: findColorInvert($twitter);
+
+// Setup $colors to use as bulma classes (e.g. 'is-twitter')
+$colors: (
+        "white": ($white, $black),
+        "black": ($black, $white),
+        "light": ($light, $light-invert),
+        "dark": ($dark, $dark-invert),
+        "primary": ($primary, $primary-invert),
+        "info": ($info, $info-invert),
+        "success": ($success, $success-invert),
+        "warning": ($warning, $warning-invert),
+        "danger": ($danger, $danger-invert),
+        "twitter": ($twitter, $twitter-invert)
+);
+
+// Links
+$link: $primary;
+$link-invert: $primary-invert;
+$link-focus-border: $primary;
+
+// Import Bulma and Buefy styles
+@import "~bulma";
+@import "~buefy/src/scss/buefy";
+
+html {
+  background-color: #f5f7fa;
+  font-size: 16px;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  min-width: 300px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  text-rendering: optimizeLegibility;
+  text-size-adjust: 100%;
+}
+
+main {
+  padding-bottom: 5rem;
+}
+@media screen and (max-width: 1024px) {
+  .container {
+    padding: 0px 24px;
+    padding-bottom: 5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0px 12px;
+    padding-bottom: 5rem;
+  }
+}
+
+.container.is-narrow>* {
+  max-width: 524px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.container.is-narrow .section {
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+}
+.container.is-narrow>:last-child {
+  margin-bottom: 2rem!important;
+}
+.container.is-narrow>header:first-child {
+  margin-top: 4.2rem;
+}
+
+.container.is-narrow>.section {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+@media (max-width: 480px) {
+  .container.is-narrow {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .container.is-narrow>header:first-child {
+    margin-top: 1.8rem;
+    margin-bottom: 2em;
+  }
+}
+
+.label {
+  color: #7f8fa4;
+}
+
+@media (max-width: 767px) {
+  .label {
+    font-size: .875rem;
+  }
+}
+
+.float-right {
+  float: right;
+}
