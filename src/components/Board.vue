@@ -3,7 +3,8 @@
         <main class="container">
             <div class="board-back-icon">
                 <router-link to="/" class="has-text-grey-light">
-                     Go to all Boards
+                    <i class="icon-left"></i>
+                    Go to all Boards
                 </router-link>
             </div>
             <div class="title board-title is-4 is-capitalized">
@@ -267,5 +268,14 @@
         box-shadow: 2px 2px 8px 2px rgba(0, 0, 0, 0.19);
         background: white;
         border-radius: 10px;
+    }
+
+    .icon-left {
+        border: solid;
+        border-width: 0 4px 4px 0;
+        display: inline-block;
+        padding: 4px;
+        transform: rotate(135deg);
+        -webkit-transform: rotate(135deg);
     }
 </style>
