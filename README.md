@@ -1,4 +1,6 @@
-# hello-world
+Hello, this is a simple utility tool to manage tasks according to priority.
+You can create boards and add multiple tasks on each board.
+See for yourself how it manages priority.
 
 ## Project setup
 ```
@@ -10,15 +12,5 @@ yarn install
 yarn serve
 ```
 
-### Compiles and minifies for production
-```
-yarn build
-```
-
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Project specifications
+This project is built using firebase by google.

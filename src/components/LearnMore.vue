@@ -22,7 +22,7 @@
             </ul>
             <br/>
             <div>
-                Source code: <a href="https://google.com" target="_blank">Github</a>
+                Source code: <a href="https://github.com/rajatsingla/next_task" target="_blank">Github</a>
             </div>
             <br/>
             <br/>
