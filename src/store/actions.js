@@ -17,6 +17,12 @@ export default {
     bindBoards: firestoreAction(({ bindFirestoreRef }, ref) => {
         return bindFirestoreRef('boards', ref)
     }),
+    bindTasks: firestoreAction(({ bindFirestoreRef, commit, state }, ref) => {
+        if (!state.tasksBinded) {
+            commit('setTasksBinded', true)
+            return bindFirestoreRef('tasks', ref)
+        }
+    }),
     fetchCurrentBoard({ commit }, ref) {
         ref.onSnapshot(function(doc) {
             if (!doc.data()) {

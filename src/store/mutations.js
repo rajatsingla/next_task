@@ -5,6 +5,9 @@ export default {
   currentBoard(state, val) {
     state.currentBoard = val
   },
+  setTasksBinded(state, val) {
+    state.tasksBinded = val  
+  },
   setCurrentUser(state, val) {
     if (val) {
       state.currentUser = {

@@ -42,8 +42,8 @@
                             {{board.name}}
                         </p>
                         <div class="subtitle is-5">
-                            <div v-if="board.tasks && board.tasks.length" class="has-text-primary">
-                                Priority task: {{board.tasks[0]}}
+                            <div v-if="board.priority && board.priority.length" class="has-text-primary">
+                                Priority task: {{getTopTask(board)}}
                             </div>
                             <div v-else class="has-text-grey-light">
                                 No tasks on this board.
@@ -60,12 +60,13 @@
 </template>
 <script>
     const fb = require('../firebaseConfig.js')
-    import { mapState, mapActions } from 'vuex'
+    import { mapState, mapActions, mapGetters } from 'vuex'
     import { getBackgroundColour } from './utils'
 
     export default {
         computed: {
-            ...mapState(['boards', 'currentUser']),
+            ...mapState(['boards', 'currentUser', 'tasks']),
+            ...mapGetters(['tasksObj']),
             boardsFiltered: function () {
                 if (this.search) {
                     return this.boards.filter((board) => {
@@ -78,6 +79,7 @@
         },
         created() {
             this.bindBoards(this.getOrderedBoardRef())
+            this.bindTasks(this.getTaskRef())
         },
         data() {
             return {
@@ -90,7 +92,7 @@
             }
         },
         methods: {
-            ...mapActions(['bindBoards']),
+            ...mapActions(['bindBoards', 'bindTasks']),
             getBackgroundColour () {
               return getBackgroundColour()
             },
@@ -99,6 +101,9 @@
             },
             getBoardRef () {
                 return fb.usersCollection.doc(this.currentUser.uid).collection('boards')
+            },
+            getTaskRef () {
+                return fb.usersCollection.doc(this.currentUser.uid).collection('tasks')
             },
             createBoard () {
                 this.addingBoardError = false
@@ -110,7 +115,7 @@
                 this.getBoardRef().doc(this.boardForm.name).set({
                     name: this.boardForm.name,
                     createdAt: Date.now(),
-                    tasks: [],
+                    priority: []
                 }).then(() => {
                     this.boardForm = {
                         name: ''
@@ -123,6 +128,14 @@
                     console.log(err)
                 })
             },
+            getTopTask: function (board) {
+                // watching this.tasks.length to make sure bindTasks promise is resolved
+                if (board.priority.length && this.tasks.length) {
+                    return this.tasksObj[board.priority[0]].task
+                } else {
+                    return ""
+                }
+            }
         }
     }
 </script>

@@ -2,5 +2,7 @@ export default {
     currentUser: null,
     userProfile: {},
     boards: [],
-    currentBoard: {}
+    tasks: {},
+    currentBoard: {},
+    tasksBinded: false
 };

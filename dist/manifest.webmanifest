@@ -1,0 +1,13 @@
+{
+  "name": "Awake",
+  "short_name": "awake",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#1686f7",
+  "description": "A simple utility tool to manage tasks according to priority.",
+  "icons": [{
+    "src": "./favicon.png",
+    "sizes": "48x48",
+    "type": "image/png"
+  }]
+}

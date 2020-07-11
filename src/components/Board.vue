@@ -60,8 +60,8 @@
                 <h4>
                     Task on Priority
                 </h4>
-                <div v-if="currentBoard.tasks && currentBoard.tasks.length" class="subtitle is-5 text-wrap has-text-primary">
-                    {{currentBoard.tasks[0]}}
+                <div v-if="currentBoard.priority && currentBoard.priority.length" class="subtitle is-5 text-wrap has-text-primary">
+                    {{getTopTask(currentBoard)}}
                     <div>
                         <b-button @click="deleteTask" type="is-success" size="is-small" class="margin-top-10">
                             Done
@@ -101,11 +101,12 @@
 </template>
 <script>
     const fb = require('../firebaseConfig.js')
-    import {mapState, mapActions} from 'vuex'
+    import {mapState, mapActions, mapGetters} from 'vuex'
 
     export default {
         created() {
             this.fetchCurrentBoard(this.getBoardDocRef())
+            this.bindTasks(this.getTaskRef())
         },
         data() {
             return {
@@ -123,12 +124,16 @@
             }
         },
         computed: {
-            ...mapState(['currentUser', 'currentBoard']),
+            ...mapState(['currentUser', 'currentBoard', 'tasks']),
+            ...mapGetters(['tasksObj']),
         },
         methods: {
-            ...mapActions(['fetchCurrentBoard']),
+            ...mapActions(['fetchCurrentBoard', 'bindTasks']),
             getBoardDocRef() {
                 return fb.usersCollection.doc(this.currentUser.uid).collection('boards').doc(this.boardName)
+            },
+            getTaskRef () {
+                return fb.usersCollection.doc(this.currentUser.uid).collection('tasks')
             },
             clearForm() {
                 this.addingTask = false
@@ -158,13 +163,22 @@
                 });
             },
             deleteTask() {
-                let tasks = this.currentBoard ? [...this.currentBoard.tasks] : []
-                tasks.shift()
-                this.getBoardDocRef().update({tasks: tasks}).then(() => {
+                let priority = this.currentBoard ? [...this.currentBoard.priority] : []
+                let taskId = priority.shift()
+                this.getBoardDocRef().update({priority: priority}).then(() => {
                     console.log('task deleted')
                 }).catch(err => {
                     console.log(err)
                 })
+                if (taskId && this.tasksObj[taskId]) {
+                    this.getTaskRef().doc(taskId).update({
+                        status: "done",
+                        updateDate: Date.now()
+                    })
+                    .catch(function(error) {
+                        console.error("Error updating document: ", error);
+                    });
+                }
             },
             addTask() {
                 this.addingTaskError = false
@@ -172,19 +186,40 @@
                     this.addingTaskError = true
                     return false
                 }
-                let tasks = this.currentBoard ? [...this.currentBoard.tasks] : []
+                let tasks = this.getCurrentBoardTasks()
+                let priority = this.currentBoard ? [...this.currentBoard.priority] : []
                 let idx = tasks.length ? this.binarySearch(tasks, 0, tasks.length - 1, this.task) : -1
+                let that = this
 
                 if (idx !== "terminated") {
-                    tasks.splice(idx + 1, 0, this.task)
-                    this.getBoardDocRef().update({tasks: tasks}).then(() => {
-                        this.$buefy.toast.open('Task added')
-                        console.log('task added')
-                    }).catch(err => {
-                        console.log(err)
+                    this.getTaskRef().add({
+                        board: this.currentBoard.name,
+                        createDate: Date.now(),
+                        status: "pending",
+                        task: this.task,
+                        updateDate: Date.now()
                     })
+                    .then(function(docRef) {
+                        priority.splice(idx + 1, 0, docRef.id)
+                        that.getBoardDocRef().update({priority: priority}).then(() => {
+                            that.$buefy.toast.open('Task added')
+                            console.log('task added')
+                        }).catch(err => {
+                            console.log(err)
+                        })
+                    })
+                    .catch(function(error) {
+                        console.error("Error adding document: ", error);
+                    });
                     this.clearForm()
                 }
+            },
+            getCurrentBoardTasks() {
+                let tasks = []
+                for (let i = 0; i < this.currentBoard.priority.length; i++) {
+                    tasks.push(this.tasksObj[this.currentBoard.priority[i]].task)
+                }
+                return tasks
             },
             binarySearch(tasks, low, high, key) {
                 if (this.stopRecursion) {
@@ -213,6 +248,14 @@
                 this.answersMap[this.task1 + this.task2] = selectedTask
                 this.stopRecursion = false
                 this.addTask()
+            },
+            getTopTask: function (board) {
+                // watching this.tasks.length to make sure bindTasks promise is resolved
+                if (board.priority.length && this.tasks.length) {
+                    return this.tasksObj[board.priority[0]].task
+                } else {
+                    return ""
+                }
             }
         }
     }
